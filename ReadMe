@@ -2,17 +2,17 @@ This “sourcecode” folder contains the source code for our LiveDeep.
 
 The structurs are:
 sourcecode
-|
-|-----___pycache__ : folders if you want use pycharm to open the project
-|
-|-----.idea :folders if you want use pycharm to open the project
-|
-|-----models : contains the CNN (VGG alexNet and so on ) structure in python code               without any weight
-|
-| ------VideoPip.py : video preprocessing, getting small images and user trace
-|--------VideoProcessingPMultipleParameters.py: LiveDeep normal mode
-|
-|--------VideoProcessingRLifeLong.py : LiveDeep lifelong mode.
+  |
+  |-----___pycache__ : folders if you want use pycharm to open the project
+  |
+  |-----.idea :folders if you want use pycharm to open the project
+  |
+  |-----models : contains the CNN (VGG alexNet and so on ) structure in python code               without any weight
+  |
+  | ------VideoPip.py : video preprocessing, getting small images and user trace
+  |--------VideoProcessingPMultipleParameters.py: LiveDeep normal mode
+  |
+  |--------VideoProcessingRLifeLong.py : LiveDeep lifelong mode.
 
 
 
