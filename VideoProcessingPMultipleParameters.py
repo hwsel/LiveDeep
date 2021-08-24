@@ -748,7 +748,8 @@ class Solver(object):
                 countShow += 1
                 if cv.waitKey(1) & 0xFF == ord('q'):
                     break
-
+            Out=estUserTrace(LocationPerFrame,countShow)
+            UWL, UHL ,UWH, UHH =CalculateUserView(Out[0],Out[1])
             UpdateTileStatUF(TileStaByUF,UWL, UHL ,UWH, UHH)
 
         cap.release()

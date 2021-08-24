@@ -502,8 +502,7 @@ class Solver(object):
                 else:
                     break
                 '''
-                获取一个buffer内容后，每帧切5*5=25 个小块。组成200个小图片作为一个patch
-                然后放入CNN中训练
+                
                 5*5*8:processed_dataC
                 '''
                 u, f ,v= data.processed_data200IOUC(TileNO, 1, p_u, P_f)  # 此函数是将一个buffer内，取所有帧内特定一个块组成一组，有多少帧就有多少个小图片，块有多大，小图就有多大。
@@ -547,7 +546,7 @@ class Solver(object):
 
                     self.optimizer.zero_grad()
                     output = self.model(TenFram)
-                    if Times ==1:
+                    if Times ==0:               # 0
                         Prediction=output
 
 
@@ -771,7 +770,8 @@ class Solver(object):
                     countShow += 1
                     if cv.waitKey(1) & 0xFF == ord('q'):
                         break
-
+                Out=estUserTrace(LocationPerFrame,countShow)
+                UWL, UHL ,UWH, UHH =CalculateUserView(Out[0],Out[1])
                 UpdateTileStatUF(TileStaByUF,UWL, UHL ,UWH, UHH)
 
             cap.release()
@@ -990,7 +990,7 @@ class Solver(object):
 
                 self.optimizer.zero_grad()
                 output = self.model(TenFram)
-                if Times ==1:
+                if Times ==0:       #0
                     Prediction=output
 
 
@@ -1214,7 +1214,8 @@ class Solver(object):
                 countShow += 1
                 if cv.waitKey(1) & 0xFF == ord('q'):
                     break
-
+            Out=estUserTrace(LocationPerFrame,countShow)
+            UWL, UHL ,UWH, UHH =CalculateUserView(Out[0],Out[1])
             UpdateTileStatUF(TileStaByUF,UWL, UHL ,UWH, UHH)
 
         cap.release()
