@@ -7,7 +7,7 @@ sourcecode
   |
   |-----.idea :folders if you want use pycharm to open the project
   |
-  |-----models : contains the CNN (VGG alexNet and so on ) structure in python code               without any weight
+  |-----models : contains the CNN (VGG alexNet and so on ) structure in python code without any weight
   |
   | ------VideoPip.py : video preprocessing, getting small images and user trace
   |--------VideoProcessingPMultipleParameters.py: LiveDeep normal mode
