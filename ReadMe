@@ -1,19 +1,21 @@
-This “sourcecode” folder contains the source code for our LiveDeep.
+Update(08-25-2021):
+In response to Issue #1, we checked the version of the code in this repo and realized that it was not the newest version and did not contain the LSTM part used by the LiveDeep work. We have updated the code now. Please refer to the new version of the code if you are using LiveDeep for your project.
 
-The structurs are:
-sourcecode
-  |
-  |-----___pycache__ : folders if you want use pycharm to open the project
-  |
-  |-----.idea :folders if you want use pycharm to open the project
-  |
-  |-----models : contains the CNN (VGG alexNet and so on ) structure in python code without any weight
-  |
-  | ------VideoPip.py : video preprocessing, getting small images and user trace
-  |--------VideoProcessingPMultipleParameters.py: LiveDeep normal mode
-  |
-  |--------VideoProcessingRLifeLong.py : LiveDeep lifelong mode.
+This repos contains the source code for our LiveDeep project.
 
+The structure of the repo is the following:
+
+  |----- ___pycache__: folders if you want use pycharm to open the project
+  |
+  |----- .idea: folders if you want use pycharm to open the project
+  |
+  |----- models: contains the CNN (VGG, AlexNet, etc.) structure in python code without any weight
+  |
+  |----- VideoPip.py: video preprocessing, getting small images and user trace
+  |
+  |----- VideoProcessingPMultipleParameters.py: LiveDeep normal mode
+  |
+  |----- VideoProcessingRLifeLong.py: LiveDeep lifelong mode.
 
 
 Library requirement:
@@ -21,5 +23,3 @@ pytorch 1.0
 opencv 3+
 Python 3+
 
-Update(08-25-2021):
- We checked the version of the code in this repo and realized that it was not the newest version and did not contain the LSTM part used by the LiveDeep work. We have updated the code now. Please refer to the new version of the code if you are using LiveDeep in your project.
