@@ -24,35 +24,34 @@ import torch.optim as optim
 from UserTrace import LocationCalculate,userLocal_One, LocationCalculateB
 
 class UserTraceEst(nn.Module):
-    def __init__(self, output_size, SamplIn_U, hidden_dim, n_layers):
-        super(SentimentNet, self).__init__()
-        self.output_size = output_size
-        self.n_layers = n_layers
-        self.hidden_dim = hidden_dim
-        
-        self.lstm = nn.LSTM(SamplIn_U, hidden_dim, n_layers, dropout=drop_prob, batch_first=True)
-        self.fc = nn.Linear(hidden_dim, output_size)
-        self.sigmoid = nn.Sigmoid()
-        
-    def forward(self, x, hidden):
-        batch_size = x.size(0)
-        x = x.long()
-        lstm_out, hidden = self.lstm(x, hidden)
-        lstm_out = lstm_out.contiguous().view(-1, self.hidden_dim)
-        
-        out = self.dropout(lstm_out)
-        out = self.fc(out)
-        out = self.sigmoid(out)
-        
-        out = out.view(batch_size, -1)
-        out = out[:,-1]
-        return out, hidden
-    
-    def init_hidden(self, batch_size):
-        weight = next(self.parameters()).data
-        hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device),
-                      weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device))
-        return hidden
+    def __init__(self, inp_dim, out_dim, mid_dim, mid_layers):
+        super(RegLSTM, self).__init__()
+
+        self.rnn = nn.LSTM(inp_dim, mid_dim, mid_layers)  # rnn
+        self.reg = nn.Sequential(
+            nn.Linear(mid_dim, mid_dim),
+            nn.Tanh(),
+            nn.Linear(mid_dim, out_dim),
+        )  # regression
+
+    def forward(self, x):
+        y = self.rnn(x)[0]  # y, (h, c) = self.rnn(x)
+
+        seq_len, batch_size, hid_dim = y.shape
+        y = y.view(-1, hid_dim)
+        y = self.reg(y)
+        y = y.view(seq_len, batch_size, -1)
+        return y
+
+    def output_y_hc(self, x, hc):
+        y, hc = self.rnn(x, hc)  # y, (h, c) = self.rnn(x)
+
+        seq_len, batch_size, hid_dim = y.size()
+        y = y.view(-1, hid_dim)
+        y = self.reg(y)
+        y = y.view(seq_len, batch_size, -1)
+        return y, hc
+
 
 def estUserTrace(User,Cur):
     DATA_IN_X=[]
@@ -63,31 +62,129 @@ def estUserTrace(User,Cur):
         DATA_IN_Y.append(i)
     
     for i in range (8):
-        DATA_IN_X[i]=User[Cur+i][0]
-        DATA_IN_Y[i]=User[Cur+i][1]
+        DATA_IN_X[i]=User[Cur+i-8][0]
+        DATA_IN_Y[i]=User[Cur+i-8][1]
 
-    X=[DATA_IN_X,DATA_IN_Y]
-    model = SentimentNet( 1, 8, 8, 2)
-    lr=0.005
-    criterion = nn.BCELoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    epochs = 2
-    counter = 0
-    h = model.init_hidden(1)
-    for i in range(epochs):
-        model.zero_grad()
-        output, h = model(X, h)
+    inp_dim = 1
+    out_dim = 1
+    mid_dim = 8
+    mid_layers = 2
+    batch_size = 8
+    mod_dir = '.'
+
+    '''load data'''
+    #data = load_data()
+    data_X=[1,2,3,4,5,6,7,8]
+    data_TX=[9,10,11,12,13,14,15,16]
+    data_X=np.array(data_X)
+    data_TX=np.array(data_TX)
+    data_Yx = DATA_IN_X#[4,5,4,5,4,4,4,4]#[4,5,4,5,6,7,3,4]
+    data_Yx=np.array(data_Yx)
+    data_Yy = DATA_IN_Y#[4,5,4,5,6,7,3,4]
+    #assert data_X.shape[0] == inp_dim
+
+    #print("original x:")
+    #print(data_x)
+
+    train_size = int(len(data_X) )
+    print(train_size,len(data_X),data_X)
+    data_X = data_X[:train_size]
+    data_TX=data_TX[:train_size]
+    data_Yx = data_Yx[:train_size]
+    data_Yy = data_Yy[:train_size]
+    data_X = data_X.reshape((train_size, inp_dim))
+    data_TX=data_TX.reshape((train_size, inp_dim))
+    data_Yx = data_Yx.reshape((train_size, out_dim))
+    data_Yy = data_Yy.reshape((train_size, out_dim))
+
+    
+
+    #print(inp_dim, out_dim, mid_dim, mid_layers)
+    #return 0
+
+    '''build model'''
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    net = RegLSTM(inp_dim, out_dim, mid_dim, mid_layers).to(device)
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(net.parameters(), lr=1e-2)
+
+    '''train'''
+    var_x = torch.tensor(data_X, dtype=torch.float32, device=device)
+    var_y = torch.tensor(data_Yx, dtype=torch.float32, device=device)
+    var_yy = torch.tensor(data_Yy, dtype=torch.float32, device=device)
+
+    data_TX
+    var_Tx = torch.tensor(data_TX, dtype=torch.float32, device=device)
+    var_y = torch.tensor(data_Yx, dtype=torch.float32, device=device)
+
+    batch_var_x = list()
+    batch_var_Tx = list()
+    batch_var_y = list()
+    batch_var_yy = list()
+
+    for i in range(batch_size):
+        j = train_size - i
+        batch_var_x.append(var_x[j:])
+        batch_var_Tx.append(var_Tx[j:])
+        batch_var_y.append(var_y[j:])
+        batch_var_yy.append(var_yy[j:])
+    
+    print(len(batch_var_y[0]))
+    #print(len(train_y))
+    #return 0
+
+    from torch.nn.utils.rnn import pad_sequence
+    batch_var_x = pad_sequence(batch_var_x)
+    batch_var_Tx = pad_sequence(batch_var_Tx)
+    batch_var_y = pad_sequence(batch_var_y)
+    batch_var_yy = pad_sequence(batch_var_yy)
+
+    with torch.no_grad():
+        weights = np.tanh(np.arange(len(data_Yx)) * (np.e / len(data_Yx)))
+        weights = torch.tensor(weights, dtype=torch.float32, device=device)
+
+    print("Training Start")
+    for e in range(384): #384
+        out = net(batch_var_x)
+    
+        # loss = criterion(out, batch_var_y)
+        loss = (out - batch_var_y) ** 2 * weights
+        loss = loss.mean()
+    
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    
+        if e % 64 == 0:
+            print('Epoch: {:4}, Loss: {:.5f}'.format(e, loss.item()))
+    #torch.save(net.state_dict(), '{}/net.pth'.format(mod_dir))
+    #print("Save in:", '{}/net.pth'.format(mod_dir))
 
 
-    loss = criterion(output.squeeze(), labels.float())
-    loss.backward()
-    nn.utils.clip_grad_norm_(model.parameters(), clip)
-    optimizer.step()
+    print("finish training========")
 
+    outA = net(batch_var_Tx)
+    #print(out)
 
-    output, h = model(X, h)
+    print("Training B Start")
+    for e in range(384): #384
+        out = net(batch_var_x)
+    
+        # loss = criterion(out, batch_var_y)
+        loss = (out - batch_var_yy) ** 2 * weights
+        loss = loss.mean()
+    
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    
+        if e % 64 == 0:
+            print('Epoch: {:4}, Loss: {:.5f}'.format(e, loss.item()))
+    #torch.save(net.state_dict(), '{}/net.pth'.format(mod_dir))
+    #print("Save in:", '{}/net.pth'.format(mod_dir))
 
-    return output
+    outB = net(batch_var_Tx)
+    return int(outA[0][7].item()),int(outB[0][7].item())
 
 
 def get_data():
@@ -204,7 +301,7 @@ def processed_dataB(grid_size=3, indexB = 1,u=[],f=[]):
             row = math.ceil(index/grid_size)
             col = (index-1)%grid_size
             frame_part = frame[int((720/grid_size)*(row-1)):int((720/grid_size)*(row)), int((1280/grid_size)*(col)):int((1280/grid_size)*(col+1)), :]
-            #print("index为",index,len(frame_part))
+            #print("index",index,len(frame_part))
             frame_part = cv.resize(frame_part, (120, 120))
             p_f.append(frame_part)
             # print(int((720/grid_size)*(row-1)), int((720/grid_size)*(row)), int((1280/grid_size)*(col)), int((1280/grid_size)*(col+1)))

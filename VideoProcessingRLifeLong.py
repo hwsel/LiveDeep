@@ -287,7 +287,7 @@ class Solver(object):
 
         for batch_num, (data, target) in enumerate(self.train_loader):
             data, target = data.to(self.device), target.to(self.device)
-            # print("目标：",target)
+            # print("",target)
             self.optimizer.zero_grad()
             output = self.model(data)
             loss = self.criterion(output, target)
@@ -355,9 +355,9 @@ class Solver(object):
             '''
         FileList = ["1-7-Cooking BattleB", "2-3-RioVRB", "2-4-FemaleBasketballB", "2-5-FightingB", "2-6-AnittaB",
                     "1-1-Conan Gore FlyB","1-5-TahitiSurfB","2-8-reloadedB","2-2-VoiceToyB",
-                    "1-2-FrontB", "1-6-FallujaB", "1-8-FootballB", "1-9-RhinosB", "2-1-KoreanB"]  # 14 个
+                    "1-2-FrontB", "1-6-FallujaB", "1-8-FootballB", "1-9-RhinosB", "2-1-KoreanB"]  # 14 
 
-        K_V = IndeV  # 视频号码
+        K_V = IndeV  # 
         FL = FileList[K_V]
         for FL in FileList:
             VideoName = FL  # 1-2-FrontB  1-1-Conan Gore FlyB  1-9-RhinosB
@@ -371,15 +371,11 @@ class Solver(object):
 
             cap = cv.VideoCapture(videofile)
             capB = cv.VideoCapture(videofile)
-            '''
-            用户数据
-            '''
+        
             UserID = IndeU
             UserFile = '../../DataProcess/Anittia/' + VideoUserName + str(UserID) + ".csv"
             UserDataCSV = UserFile
-            '''
-            视频信息
-            '''
+            
             W_Frame = cap.get(3)
             H_Frame = cap.get(4)
             # check the parameters of get frome:  https://blog.csdn.net/qhd1994/article/details/80238707
@@ -399,31 +395,26 @@ class Solver(object):
             LocationPerFrame = data.userLocal_One(FrameRate, UserDataCSV, 1, TotalSeconds, H_Frame, W_Frame)
             print("total frame from user data:", len(LocationPerFrame))
 
-            '''
-                    一些参数。此处包括分割大小，buffer长度
-                    '''
+            
             TileNO = 5
             bufInSen = 2    #original 2
             bufLen = FrameRate * bufInSen
             for i in range(TileNO * TileNO):
                 Tile_Status.append(0)
 
-            """
-            保存视频和数据
-            """
+            
             TpB = '_' + NetworkType + '_'
             CSVfilename = '00A' + TpB + FL + '_' + str(IndeU) + 'Tk_EpoMax' + str(Tk) + '_' + str(
                 EpoMax) + '_AccAndBandC.csv'
-            fileobj = open(CSVfilename, 'w', newline='')  # 注意是wb
+            fileobj = open(CSVfilename, 'w', newline='')  
             CSVfilenameTime = '00A' + TpB + FL + '_' + str(IndeU) + 'Tk_EpoMax' + str(Tk) + '_' + str(
                 EpoMax) + '_TimeConsumptionC.csv'
-            fileobjT = open(CSVfilenameTime, 'w', newline='')  # 注意是wb
-            # fileobj.write('\xEF\xBB\xBF')#该语句解决中文乱码问题
-            # 可以理解为初始化
-            writer = csv.writer(fileobj)  # csv.writer(fileobj)返回writer对象writer
-            writerT = csv.writer(fileobjT)  # csv.writer(fileobj)返回writer对象writer
+            fileobjT = open(CSVfilenameTime, 'w', newline='')  
+            
+            writer = csv.writer(fileobj)  
+            writerT = csv.writer(fileobjT)  
 
-            # 先写入头信息
+            
             sortedValues = ['VideoName', 'UserIndex', 'tile total1/2 or + 1/8', 'Max epoch ']
             writer.writerow(sortedValues)
             writerT.writerow(sortedValues)
@@ -433,8 +424,7 @@ class Solver(object):
             writerT.writerow(sortedValues)
             TotalSize = 'Size/' + str(TileNO * TileNO)
             sortedValues = ['Predicted accurate', TotalSize, 'countMatched', 'ACC Feedback', 'ACC both', 'NewBand']
-            # writerow()方法是一行一行写入，
-            # writerows方法是一次写入多行
+            
             writer.writerow(sortedValues)
             ValueTime = ['running time', 'epoches', 'FirstLoss', 'FinalLoss', 'CountMatch']
             writerT.writerow(ValueTime)
@@ -457,12 +447,12 @@ class Solver(object):
             # M = main(args.grid, args.index)
             # M = main(TileNO, args.index)
 
-            # 视频运行的主循环：
-            countMain = 0  # 程序主计数器
+            
+            countMain = 0  
             countShow = 0
             point_size = 100
             point_color = (0, 0, 255)  # BGR
-            thickness = 8  # 可以为 0 、4、8
+            thickness = 8  # 
             ColorPrediction = (255, 0, 0)
             FirstLoss=0
             FinalLoss=0
@@ -477,10 +467,10 @@ class Solver(object):
             while (True):
                 P_f = []
                 p_u = []
-                # 获取一个buffer内图片和用户数据
+                
                 startT=time()
                 CountError = 0
-                if countMain + bufLen < TotalFrames:  # 每次处理一个buffer。 这里确保后面有一个buffer的frames
+                if countMain + bufLen < TotalFrames:  
                     for i in range(bufLen):
                         ret, frame = cap.read()
                         '''
@@ -488,11 +478,11 @@ class Solver(object):
                             BreakFlag=1
                             break
                         '''
-                        # 添加下采样，1秒4帧就可以
-                        # if i%SubSampleStep ==0 and i!=0:        #这里目标暂时是2秒的buffer中获取8帧。
-                        if i % SubSampleStep == 0:  # 这里目标暂时是2秒的buffer中获取8帧。
-                            P_f.append(frame)  # 添加图片
-                            p_u.append(LocationPerFrame[countMain])  # 添加对应的用户数据
+                        
+                        # if i%SubSampleStep ==0 and i!=0:       
+                        if i % SubSampleStep == 0:  
+                            P_f.append(frame)  
+                            p_u.append(LocationPerFrame[countMain])  
                             #print(p_u)
                             CountError += 1
                             # print(i)
@@ -505,8 +495,8 @@ class Solver(object):
                 
                 5*5*8:processed_dataC
                 '''
-                u, f ,v= data.processed_data200IOUC(TileNO, 1, p_u, P_f)  # 此函数是将一个buffer内，取所有帧内特定一个块组成一组，有多少帧就有多少个小图片，块有多大，小图就有多大。
-                for index in range(TileNO * TileNO - 1):  # 为了方便numpy数组合并，第一个块单独完成，剩余24个块由for循环完成。然后每执行一次合并一次数组
+                u, f ,v= data.processed_data200IOUC(TileNO, 1, p_u, P_f)  
+                for index in range(TileNO * TileNO - 1): 
                     au, af ,av= data.processed_data200IOUC(TileNO, index + 2, p_u, P_f)
                     #u = np.append(u, au)
                     u.extend(au)
@@ -516,7 +506,7 @@ class Solver(object):
                 # print(len(u))
                 # print(CountError,SubSampleStep,bufLen,"FrameRate：",FrameRate)
                 # exit()
-                # 训练 prediction 是结果
+                
                 #cv2.imshow('test',f[0])
                 #cv2.waitKey()
                 #print(len(u),u.count(1))
@@ -770,7 +760,7 @@ class Solver(object):
                     countShow += 1
                     if cv.waitKey(1) & 0xFF == ord('q'):
                         break
-                Out=estUserTrace(LocationPerFrame,countShow)
+                Out=data.(LocationPerFrame,countShow)
                 UWL, UHL ,UWH, UHH =CalculateUserView(Out[0],Out[1])
                 UpdateTileStatUF(TileStaByUF,UWL, UHL ,UWH, UHH)
 
@@ -800,9 +790,9 @@ class Solver(object):
             '''
         FileList = ["1-7-Cooking BattleB", "2-3-RioVRB", "2-4-FemaleBasketballB", "2-5-FightingB", "2-6-AnittaB",
                     "1-1-Conan Gore FlyB","1-5-TahitiSurfB","2-8-reloadedB","2-2-VoiceToyB",
-                    "1-2-FrontB", "1-6-FallujaB", "1-8-FootballB", "1-9-RhinosB", "2-1-KoreanB"]  # 14 个
+                    "1-2-FrontB", "1-6-FallujaB", "1-8-FootballB", "1-9-RhinosB", "2-1-KoreanB"]  # 14 
 
-        K_V = IndeV  # 视频号码
+        K_V = IndeV  
         FL = FileList[K_V]
 
         VideoName = FL  # 1-2-FrontB  1-1-Conan Gore FlyB  1-9-RhinosB
@@ -816,18 +806,14 @@ class Solver(object):
 
         cap = cv.VideoCapture(videofile)
         capB = cv.VideoCapture(videofile)
-        '''
-        用户数据
-        '''
+        
         UserID = IndeU
         UserFile = '../../DataProcess/Anittia/' + VideoUserName + str(UserID) + ".csv"
         UserDataCSV = UserFile
-        '''
-        视频信息
-        '''
+        
         W_Frame = cap.get(3)
         H_Frame = cap.get(4)
-        # check the parameters of get frome:  https://blog.csdn.net/qhd1994/article/details/80238707
+        
         print("===============frame width============")
         print(W_Frame)
         print("===============frame height============")
@@ -844,29 +830,24 @@ class Solver(object):
         LocationPerFrame = data.userLocal_One(FrameRate, UserDataCSV, 1, TotalSeconds, H_Frame, W_Frame)
         print("total frame from user data:", len(LocationPerFrame))
 
-        '''
-                一些参数。此处包括分割大小，buffer长度
-                '''
+        
         TileNO = 5
         bufInSen = 2    #original 2
         bufLen = FrameRate * bufInSen
         for i in range(TileNO * TileNO):
             Tile_Status.append(0)
 
-        """
-        保存视频和数据
-        """
+       
         TpB='_'+NetworkType+'_NOLifeLong_'
         CSVfilename='00A'+TpB+FL+'_'+str(IndeU)+'Tk_EpoMax'+str(Tk)+'_'+str(EpoMax)+'_AccAndBandC.csv'
-        fileobj = open(CSVfilename, 'w', newline='')  # 注意是wb
+        fileobj = open(CSVfilename, 'w', newline='')  
         CSVfilenameTime ='00A'+TpB+ FL +'_'+str(IndeU)+'Tk_EpoMax'+str(Tk)+'_'+str(EpoMax)+'_TimeConsumptionC.csv'
-        fileobjT = open(CSVfilenameTime, 'w', newline='')  # 注意是wb
-        # fileobj.write('\xEF\xBB\xBF')#该语句解决中文乱码问题
-        # 可以理解为初始化
-        writer = csv.writer(fileobj)  # csv.writer(fileobj)返回writer对象writer
-        writerT = csv.writer(fileobjT)  # csv.writer(fileobj)返回writer对象writer
+        fileobjT = open(CSVfilenameTime, 'w', newline='')  
+        
+        writer = csv.writer(fileobj)  
+        writerT = csv.writer(fileobjT)  
 
-        # 先写入头信息
+        
         sortedValues = ['VideoName', 'UserIndex', 'tile total1/2 or + 1/8', 'Max epoch ']
         writer.writerow(sortedValues)
         writerT.writerow(sortedValues)
@@ -876,8 +857,7 @@ class Solver(object):
         writerT.writerow(sortedValues)
         TotalSize='Size/'+str(TileNO*TileNO)
         sortedValues = ['Predicted accurate', TotalSize,'countMatched','ACC Feedback','ACC both','NewBand']
-        # writerow()方法是一行一行写入，
-        # writerows方法是一次写入多行
+        
         writer.writerow(sortedValues)
         ValueTime=['running time','epoches','FirstLoss','FinalLoss','CountMatch']
         writerT.writerow(ValueTime)
@@ -900,12 +880,12 @@ class Solver(object):
         # M = main(args.grid, args.index)
         # M = main(TileNO, args.index)
 
-        # 视频运行的主循环：
-        countMain = 0  # 程序主计数器
+        
+        countMain = 0  
         countShow = 0
         point_size = 100
         point_color = (0, 0, 255)  # BGR
-        thickness = 8  # 可以为 0 、4、8
+        thickness = 8  
         ColorPrediction = (255, 0, 0)
         FirstLoss=0
         FinalLoss=0
@@ -920,10 +900,10 @@ class Solver(object):
         while (True):
             P_f = []
             p_u = []
-            # 获取一个buffer内图片和用户数据
+            
             startT=time()
             CountError = 0
-            if countMain + bufLen < TotalFrames:  # 每次处理一个buffer。 这里确保后面有一个buffer的frames
+            if countMain + bufLen < TotalFrames:  
                 for i in range(bufLen):
                     ret, frame = cap.read()
                     '''
@@ -931,11 +911,11 @@ class Solver(object):
                         BreakFlag=1
                         break
                     '''
-                    # 添加下采样，1秒4帧就可以
-                    # if i%SubSampleStep ==0 and i!=0:        #这里目标暂时是2秒的buffer中获取8帧。
-                    if i % SubSampleStep == 0:  # 这里目标暂时是2秒的buffer中获取8帧。
-                        P_f.append(frame)  # 添加图片
-                        p_u.append(LocationPerFrame[countMain])  # 添加对应的用户数据
+                    # 
+                    # if i%SubSampleStep ==0 and i!=0:       
+                    if i % SubSampleStep == 0:  
+                        P_f.append(frame)  
+                        p_u.append(LocationPerFrame[countMain])  
                         #print(p_u)
                         CountError += 1
                         # print(i)
@@ -945,12 +925,11 @@ class Solver(object):
             else:
                 break
             '''
-            获取一个buffer内容后，每帧切5*5=25 个小块。组成200个小图片作为一个patch
-            然后放入CNN中训练
+            
             5*5*8:processed_dataC
             '''
-            u, f ,v= data.processed_data200IOUC(TileNO, 1, p_u, P_f)  # 此函数是将一个buffer内，取所有帧内特定一个块组成一组，有多少帧就有多少个小图片，块有多大，小图就有多大。
-            for index in range(TileNO * TileNO - 1):  # 为了方便numpy数组合并，第一个块单独完成，剩余24个块由for循环完成。然后每执行一次合并一次数组
+            u, f ,v= data.processed_data200IOUC(TileNO, 1, p_u, P_f)  
+            for index in range(TileNO * TileNO - 1):  
                 au, af ,av= data.processed_data200IOUC(TileNO, index + 2, p_u, P_f)
                 #u = np.append(u, au)
                 u.extend(au)
@@ -960,7 +939,7 @@ class Solver(object):
             # print(len(u))
             # print(CountError,SubSampleStep,bufLen,"FrameRate：",FrameRate)
             # exit()
-            # 训练 prediction 是结果
+            
             #cv2.imshow('test',f[0])
             #cv2.waitKey()
             #print(len(u),u.count(1))
@@ -1214,7 +1193,7 @@ class Solver(object):
                 countShow += 1
                 if cv.waitKey(1) & 0xFF == ord('q'):
                     break
-            Out=estUserTrace(LocationPerFrame,countShow)
+            Out=data.estUserTrace(LocationPerFrame,countShow)
             UWL, UHL ,UWH, UHH =CalculateUserView(Out[0],Out[1])
             UpdateTileStatUF(TileStaByUF,UWL, UHL ,UWH, UHH)
 

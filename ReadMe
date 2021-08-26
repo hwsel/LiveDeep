@@ -20,3 +20,6 @@ Library requirement:
 pytorch 1.0
 opencv 3+
 Python 3+
+
+Update(08-25-2021):
+ We checked the version of the code in this repo and realized that it was not the newest version and did not contain the LSTM part used by the LiveDeep work. We have updated the code now. Please refer to the new version of the code if you are using LiveDeep in your project.

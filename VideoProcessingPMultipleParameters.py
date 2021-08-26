@@ -337,7 +337,7 @@ class Solver(object):
             '''
         FileList = ["1-7-Cooking BattleB", "2-3-RioVRB", "2-4-FemaleBasketballB", "2-5-FightingB", "2-6-AnittaB",
                     "1-1-Conan Gore FlyB","1-5-TahitiSurfB","2-8-reloadedB","2-2-VoiceToyB",
-                    "1-2-FrontB", "1-6-FallujaB", "1-8-FootballB", "1-9-RhinosB", "2-1-KoreanB"]  # 14 个
+                    "1-2-FrontB", "1-6-FallujaB", "1-8-FootballB", "1-9-RhinosB", "2-1-KoreanB"]  # 14 
 
         K_V = IndeV  # 
         FL = FileList[K_V]
@@ -353,15 +353,11 @@ class Solver(object):
 
         cap = cv.VideoCapture(videofile)
         capB = cv.VideoCapture(videofile)
-        '''
-        用户数据
-        '''
+        
         UserID = IndeU
         UserFile = '../../DataProcess/Anittia/' + VideoUserName + str(UserID) + ".csv"
         UserDataCSV = UserFile
-        '''
-        视频信息
-        '''
+        
         W_Frame = cap.get(3)
         H_Frame = cap.get(4)
         # check the parameters of get frome:  https://blog.csdn.net/qhd1994/article/details/80238707
@@ -748,7 +744,7 @@ class Solver(object):
                 countShow += 1
                 if cv.waitKey(1) & 0xFF == ord('q'):
                     break
-            Out=estUserTrace(LocationPerFrame,countShow)
+            Out=data.estUserTrace(LocationPerFrame,countShow)
             UWL, UHL ,UWH, UHH =CalculateUserView(Out[0],Out[1])
             UpdateTileStatUF(TileStaByUF,UWL, UHL ,UWH, UHH)
 
