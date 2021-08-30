@@ -15,13 +15,14 @@ import math
 
 import VideoPip as data
 
-
+   
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
-from UserTrace import LocationCalculate,userLocal_One, LocationCalculateB     #from reference [41]
+# Please check the reference [41] to get the user trace data
+from UserTrace import LocationCalculate,userLocal_One, LocationCalculateB
 
 class UserTraceEst(nn.Module):
     def __init__(self, inp_dim, out_dim, mid_dim, mid_layers):
@@ -78,9 +79,9 @@ def estUserTrace(User,Cur):
     data_TX=[9,10,11,12,13,14,15,16]
     data_X=np.array(data_X)
     data_TX=np.array(data_TX)
-    data_Yx = DATA_IN_X#[4,5,4,5,4,4,4,4]#[4,5,4,5,6,7,3,4]
+    data_Yx = DATA_IN_X
     data_Yx=np.array(data_Yx)
-    data_Yy = DATA_IN_Y#[4,5,4,5,6,7,3,4]
+    data_Yy = DATA_IN_Y
     #assert data_X.shape[0] == inp_dim
 
     #print("original x:")

@@ -84,7 +84,10 @@ def CheckPredictionResult(TileStaForCheck,UWL, UHL ,UWH, UHH):
     T=A+B+C+D
     if A*B*C*D ==1:
         Flag=1
-    return Flag, T
+    for j in range(jL,jH+1):
+        for i in range(iL,iH+1):
+            FlagB=FlagB*(TileStaForCheck[j * 5 + i])
+    return FlagB, T
 
 def CheckPredictionResultUF(TileStaForCheck,TileStaByUF,UWL, UHL ,UWH, UHH):
     iL = int(math.floor(UWL / 256))
@@ -105,12 +108,16 @@ def CheckPredictionResultUF(TileStaForCheck,TileStaByUF,UWL, UHL ,UWH, UHH):
     T = A + B + C + D
     if A * B * C * D == 1:
         Flag = 1
+    FlagB=1
+    for j in range(jL,jH+1):
+        for i in range(iL,iH+1):
+            FlagB=FlagB*(TileStaByUF[j * 5 + i])
     CountModify=0
     for i in range(len(TileStaForCheck)):
         if TileStaForCheck[i] == 0 and TileStaByUF[i]==1:
             TileStaForCheck[i]=1
             CountModify+=1
-    return Flag, CountModify
+    return FlagB, CountModify
 
 def UpdateTileStatUF(TileStaByUF,UWL, UHL ,UWH, UHH):
     for i in range(len(TileStaByUF)):
@@ -318,19 +325,7 @@ class Solver(object):
     def run(self,IndeV,IndeU,Tk,EpoMax):
         #self.load_data()
         self.load_model()
-        '''
-        accuracy = 0
-        for epoch in range(1, self.epochs + 1):
-            self.scheduler.step(epoch)
-            print("\n===> epoch: %d/200" % epoch)
-            train_result = self.train()
-            print(train_result)
-            test_result = self.test()
-            accuracy = max(accuracy, test_result[1])
-            if epoch == self.epochs:
-                print("===> BEST ACC. PERFORMANCE: %.3f%%" % (accuracy * 100))
-                self.save()
-        '''
+        
         Tile_Status = []
         '''
             video infomation
@@ -343,19 +338,13 @@ class Solver(object):
         FL = FileList[K_V]
 
         VideoName = FL  # 1-2-FrontB  1-1-Conan Gore FlyB  1-9-RhinosB
-        videofile = '../../DataProcess/Anittia/' + VideoName + ".mp4"  # 2-4-FemaleBasketballB 2-6-AnittaB 1-6-FallujaB 2-3-RioVRB  2-5-FightingB  2-8-reloadedB
-        tmp1 = FL[0]
-        tmp2 = int(FL[2]) - 1
-        if tmp1 == '1':
-            VideoUserName = "video_" + str(tmp2) + "_D1_"
-        else:
-            VideoUserName = "video_" + str(tmp2) + "_"
-
+        videofile =  VideoName + ".mp4"  # 2-4-FemaleBasketballB 2-6-AnittaB 1-6-FallujaB 2-3-RioVRB  2-5-FightingB  2-8-reloadedB
+        
         cap = cv.VideoCapture(videofile)
         capB = cv.VideoCapture(videofile)
         
         UserID = IndeU
-        UserFile = '../../DataProcess/Anittia/' + VideoUserName + str(UserID) + ".csv"
+        UserFile = VideoUserName + str(UserID) + ".csv"
         UserDataCSV = UserFile
         
         W_Frame = cap.get(3)
@@ -373,12 +362,12 @@ class Solver(object):
         TotalSeconds = int(round(TotalFrames / FrameRate))
         print("framerate and totalframes is:  ", FrameRate, TotalFrames)
         print("total second is: ", TotalSeconds)
-
-        LocationPerFrame = data.userLocal_One(FrameRate, UserDataCSV, 1, TotalSeconds, H_Frame, W_Frame)
+        #load your dataset here from reference [41] to LocationPerFrame
+        LocationPerFrame = []#data.userLocal_One(FrameRate, UserDataCSV, 1, TotalSeconds, H_Frame, W_Frame)
         print("total frame from user data:", len(LocationPerFrame))
 
         '''
-                some parameters
+                some parameters  
                 '''
         TileNO = 5
         bufInSen = 2
