@@ -21,7 +21,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
-from UserTrace import LocationCalculate,userLocal_One, LocationCalculateB
+from UserTrace import LocationCalculate,userLocal_One, LocationCalculateB     #from reference [41]
 
 class UserTraceEst(nn.Module):
     def __init__(self, inp_dim, out_dim, mid_dim, mid_layers):
