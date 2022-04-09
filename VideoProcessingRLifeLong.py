@@ -79,7 +79,7 @@ def CheckPredictionResult(TileStaForCheck,UWL, UHL ,UWH, UHH):
     jL=int(math.floor(UHL/144))
     iH = int(math.floor(UWH / 256))
     jH = int(math.floor(UHH / 144))
-    Flag=0
+    Flag,FlagB=0,0
     if iH>=5:
         iH=4
     if jH>=5:
