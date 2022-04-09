@@ -744,6 +744,12 @@ class Solver(object):
 
 if __name__ == '__main__':  # run python main.py --grid 5 --index 1
 
+    
+    '''===========================
+    Work done in 2019 and the author is no longer working on this
+    For further discussion please send email to fengx17@miamioh.edu
+    ==========================='''
+    
     parser = argparse.ArgumentParser(description="cifar-10 with PyTorch")
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')  #0.001
     parser.add_argument('--epoch', default=20, type=int, help='number of epochs tp train for')  # epoch =200
